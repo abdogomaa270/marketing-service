@@ -2,6 +2,7 @@ const bizSdk = require("facebook-nodejs-business-sdk");
 const { CustomData, EventRequest, UserData, ServerEvent } = bizSdk;
 const { env } = require("../config/constants");
 const { detectCustomData } = require("./eventDataController");
+const ApiError = require("../middlewares/ApiError");
 
 const access_token = env.ACCESS_TOKEN;
 const pixel_id = env.PIXEL_ID;
@@ -61,7 +62,6 @@ exports.sendEventToMeta = async (req, res) => {
 
     return res.status(200).json({ status: `success`, response: response });
   } catch (err) {
-    console.log(err);
-    return res.status(400).json({ status: `failed`, error: err.message });
+    return new ApiError(err.message, 500);
   }
 };
