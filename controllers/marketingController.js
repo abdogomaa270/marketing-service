@@ -1,7 +1,7 @@
 const bizSdk = require("facebook-nodejs-business-sdk");
 const { CustomData, EventRequest, UserData, ServerEvent } = bizSdk;
 const { env } = require("../config/constants");
-const { detectCustomData } = require("./eventDataController");
+const { formCustomDataObject } = require("./eventDataController");
 const ApiError = require("../middlewares/ApiError");
 
 const access_token = env.ACCESS_TOKEN;
@@ -31,7 +31,7 @@ const initializeServerEvent = ({ userData, eventSourceUrl, req }) => {
     .setEventSourceUrl(eventSourceUrl)
     .setActionSource("website");
 
-  const customData = detectCustomData(eventName, req.body);
+  const customData = formCustomDataObject(eventName, req.body);
   if (customData) {
     const customDataObject = new CustomData().setCustomProperties(customData);
     serverEvent.setCustomData(customDataObject);
@@ -45,14 +45,13 @@ exports.sendEventToMeta = async (req, res) => {
       req.headers.referer || "http://jaspers-market.com/product/123";
 
     const userData = setUserData(req);
-    console.log(userData);
 
     const serverEvent = initializeServerEvent({
       userData,
       eventSourceUrl,
       req,
     });
-    //5- create eventRequest object
+
     const eventsData = [serverEvent];
     const eventRequest = new EventRequest(access_token, pixel_id).setEvents(
       eventsData
