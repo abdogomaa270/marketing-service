@@ -39,7 +39,7 @@ const initializeServerEvent = ({ userData, eventSourceUrl, req }) => {
   return serverEvent;
 };
 //-------------------------------------------------------------------
-exports.sendEventToMeta = async (req, res) => {
+exports.sendEventToMeta = async (req, res, next) => {
   try {
     const eventSourceUrl =
       req.headers.referer || "http://jaspers-market.com/product/123";
@@ -61,6 +61,7 @@ exports.sendEventToMeta = async (req, res) => {
 
     return res.status(200).json({ status: `success`, response: response });
   } catch (err) {
-    return new ApiError(err.message, 500);
+    const statusCode = err.statusCode || 500;
+    next(new ApiError(err.message, statusCode));
   }
 };

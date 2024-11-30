@@ -1,9 +1,12 @@
 const joi = require("joi");
-const {
-  allEventsNames,
-  DateRequiredEventsData,
-} = require("../controllers/eventDataController");
-
+const { allEventsNames } = require("../config/constants");
+const DateRequiredEventsData = [
+  "submission_form_access",
+  "payment_page_access",
+  "check_status_access",
+  "language_selection_arabic",
+  "language_selection_english",
+];
 const processDataSchema = joi.object({
   userId: joi
     .string()
